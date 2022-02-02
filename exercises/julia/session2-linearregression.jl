@@ -23,7 +23,6 @@ end
 
 # ╔═╡ 0728ffe9-bb2a-4e7c-8e78-06c2dc6dd5a0
 md"## Linear Regression
-#### Exercise Session 2 - SML
 In this exercise session we will look at Linear Regression. Our goal is to predict a new data point based on a learned set of parameters.
 "
 
@@ -39,13 +38,10 @@ end
 md"This is a more general training dataset than the one provided in the python notebook but it allows more playing around 🎮"
 
 # ╔═╡ 00221d30-ea16-48f3-996f-ce85c7bd34fd
-md"Should an offset term be included? $(@bind offset CheckBox(default=true))"
-
-# ╔═╡ 2f933e44-71b9-4463-a45c-bb3b59c8fd77
-md"How many training samples should be used $(@bind num_samples Slider(2:9, default=3, show_value=true))"
-
-# ╔═╡ 45c3e104-be09-4ac6-8fef-32d6cd57328d
-md"Regularization parameter λ $(@bind lambda Slider(0:0.01:1, default=0, show_value=true))"
+md"Here are some of the tunable hyper-parameters seen in the exercise. You can play around with them and see how the graph changes based on the inputs 💥
+- Should an offset term be included? $(@bind offset CheckBox(default=true))
+- How many training samples should be used $(@bind num_samples Slider(2:9, default=3, show_value=true))
+- Regularization parameter λ $(@bind lambda Slider(0:0.01:1, default=0, show_value=true))"
 
 # ╔═╡ 49711b99-97ee-4a74-81f7-b6fb41c17b48
 begin
@@ -998,8 +994,6 @@ version = "0.9.1+5"
 # ╠═3ca7e9c1-ea0b-4e5f-a460-42387f97c54d
 # ╟─176fb955-ee86-4da6-9805-68765ae535b6
 # ╟─00221d30-ea16-48f3-996f-ce85c7bd34fd
-# ╟─2f933e44-71b9-4463-a45c-bb3b59c8fd77
-# ╟─45c3e104-be09-4ac6-8fef-32d6cd57328d
 # ╟─49711b99-97ee-4a74-81f7-b6fb41c17b48
 # ╠═85c3ae57-1fa5-43d5-9d2c-cf990856612b
 # ╟─35f03569-122c-4ffe-b6d2-e0072bf813ca

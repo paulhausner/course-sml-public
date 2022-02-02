@@ -18,7 +18,6 @@ end
 begin
 	using LinearAlgebra
 	using Plots
-	using PlotlyJS
 	using PlutoUI
 end
 
@@ -28,33 +27,58 @@ md"## Linear Regression
 In this exercise session we will look at Linear Regression. Our goal is to predict a new data point based on a learned set of parameters.
 "
 
-# ╔═╡ 8810750c-7644-4673-8b09-f262f6257ad9
-@bind xᵢₙₚᵤₜ NumberField(1:10)
-
-# ╔═╡ 7e828968-535b-4428-a427-9125d93b98a6
-xₛₜₐᵣ = [1 xᵢₙₚᵤₜ]
-
-# ╔═╡ 0037aeaa-fa7c-481f-ac9a-03c744107a42
-md"##### 2.1
-
-There are two different ways to solve a linear regression problem in Julia: the first one operates directly on the Julia representations, while the second option is to use the MLJ.jl package which is similar to python's scikit-learn."
-
 # ╔═╡ 3ca7e9c1-ea0b-4e5f-a460-42387f97c54d
 # A matrix in Julia is just a 2D list:
 begin
-	X = [1 2; 1 3; 1 4];
-	y = [-1; 1; 2];
+	X = [1 2; 1 3; 1 4; 1 5; 1 0; 1 3; 1 1; 1 1.5; 1 4.5];
+	y = [-1; 1; 2; 3; -2; 3; -2; 0; 2];
 	md"Generated Training Data"
 end
 
-# ╔═╡ 85c3ae57-1fa5-43d5-9d2c-cf990856612b
-θ = X\y
+# ╔═╡ 176fb955-ee86-4da6-9805-68765ae535b6
+md"This is a more general training dataset than the one provided in the python notebook but it allows more playing around 🎮"
 
-# ╔═╡ ad4137b4-2c22-465f-ac0d-8b4aefec45ec
-ŷ = dot(θ, xₛₜₐᵣ)
+# ╔═╡ 00221d30-ea16-48f3-996f-ce85c7bd34fd
+md"Should an offset term be included? $(@bind offset CheckBox(default=true))"
+
+# ╔═╡ 2f933e44-71b9-4463-a45c-bb3b59c8fd77
+md"How many training samples should be used $(@bind num_samples Slider(2:9, default=3, show_value=true))"
+
+# ╔═╡ 45c3e104-be09-4ac6-8fef-32d6cd57328d
+md"Regularization parameter λ $(@bind lambda Slider(0:0.01:1, default=0, show_value=true))"
+
+# ╔═╡ 49711b99-97ee-4a74-81f7-b6fb41c17b48
+begin
+	if offset
+		Xₜᵣₐᵢₙ = X[1:num_samples, :]
+		Xᵥₐₗ = X[num_samples+1:end, :]
+	else
+		Xₜᵣₐᵢₙ = X[1:num_samples, 2]
+		Xᵥₐₗ = X[num_samples+1:end, 2]
+	end
+	yₜᵣₐᵢₙ = y[1:num_samples]
+	yᵥₐₗ = y[num_samples+1:end]
+	md"Pluto knows Magic"
+end
+
+# ╔═╡ 85c3ae57-1fa5-43d5-9d2c-cf990856612b
+# Using the normal equations for Ridge Regression
+θ = inv(transpose(Xₜᵣₐᵢₙ)*Xₜᵣₐᵢₙ + lambda * I) * transpose(Xₜᵣₐᵢₙ) * yₜᵣₐᵢₙ
 
 # ╔═╡ 35f03569-122c-4ffe-b6d2-e0072bf813ca
-plot(X[:, 2], y, legend=false)
+begin
+	scatter(Xₜᵣₐᵢₙ[:, end], yₜᵣₐᵢₙ, label="train", legend=:topleft)
+	scatter!(Xᵥₐₗ[:, end], yᵥₐₗ, label="validation")
+	
+	if offset
+		plot!(-1:6, cat(ones(8), collect(-1:6), dims=2) * θ, label="")
+	else
+		plot!(-1:6, collect(-1:6) * θ, label="")
+	end
+	
+	plot!(xlims = (-0.5,5.5))
+	plot!(ylims = (-3,4))
+end
 
 # ╔═╡ 00000000-0000-0000-0000-000000000001
 PLUTO_PROJECT_TOML_CONTENTS = """
@@ -62,6 +86,10 @@ PLUTO_PROJECT_TOML_CONTENTS = """
 LinearAlgebra = "37e2e46d-f89d-539d-b4ee-838fcccc9c8e"
 Plots = "91a5bcdd-55d7-5caf-9e0b-520d859cae80"
 PlutoUI = "7f904dfe-b85e-4ff6-b463-dae2292396a8"
+
+[compat]
+Plots = "~1.25.7"
+PlutoUI = "~0.7.33"
 """
 
 # ╔═╡ 00000000-0000-0000-0000-000000000002
@@ -967,12 +995,13 @@ version = "0.9.1+5"
 # ╔═╡ Cell order:
 # ╠═fdc982b5-885f-4aa9-b2db-094b7aba7193
 # ╟─0728ffe9-bb2a-4e7c-8e78-06c2dc6dd5a0
-# ╟─8810750c-7644-4673-8b09-f262f6257ad9
-# ╠═7e828968-535b-4428-a427-9125d93b98a6
-# ╟─0037aeaa-fa7c-481f-ac9a-03c744107a42
 # ╠═3ca7e9c1-ea0b-4e5f-a460-42387f97c54d
+# ╟─176fb955-ee86-4da6-9805-68765ae535b6
+# ╟─00221d30-ea16-48f3-996f-ce85c7bd34fd
+# ╟─2f933e44-71b9-4463-a45c-bb3b59c8fd77
+# ╟─45c3e104-be09-4ac6-8fef-32d6cd57328d
+# ╟─49711b99-97ee-4a74-81f7-b6fb41c17b48
 # ╠═85c3ae57-1fa5-43d5-9d2c-cf990856612b
-# ╠═ad4137b4-2c22-465f-ac0d-8b4aefec45ec
-# ╠═35f03569-122c-4ffe-b6d2-e0072bf813ca
+# ╟─35f03569-122c-4ffe-b6d2-e0072bf813ca
 # ╟─00000000-0000-0000-0000-000000000001
 # ╟─00000000-0000-0000-0000-000000000002

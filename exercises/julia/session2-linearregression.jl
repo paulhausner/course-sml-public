@@ -54,7 +54,7 @@ begin
 	end
 	yₜᵣₐᵢₙ = y[1:num_samples]
 	yᵥₐₗ = y[num_samples+1:end]
-	md"Pluto knows Magic"
+	md"Pluto knows Magic (splitting the data into test and train)"
 end
 
 # ╔═╡ 85c3ae57-1fa5-43d5-9d2c-cf990856612b
